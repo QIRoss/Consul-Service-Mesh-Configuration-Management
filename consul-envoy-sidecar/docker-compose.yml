@@ -1,0 +1,65 @@
+services:
+  consul:
+    image: consul:1.14.6
+    container_name: consul-server
+    ports:
+      - "8500:8500"
+    volumes:
+      - ./consul/consul-config.hcl:/consul/config/consul-config.hcl
+    command: "agent -dev -config-file=/consul/config/consul-config.hcl"
+
+  service_a:
+    build:
+      context: ./service_a
+    environment:
+      - CONSUL_HTTP_ADDR=http://consul-server:8500
+      - SERVICE_HOST=service_a
+      - SERVICE_PORT=8000
+    ports:
+      - "8000"
+    depends_on:
+      - consul
+    networks:
+      - consul-network
+
+  envoy_service_a:
+    image: envoyproxy/envoy:v1.21.1
+    environment:
+      - CONSUL_HTTP_ADDR=http://consul-server:8500
+    command: "envoy -c /etc/envoy/envoy.yaml"
+    depends_on:
+      - service_a
+    networks:
+      - consul-network
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+
+  service_b:
+    build:
+      context: ./service_b
+    environment:
+      - CONSUL_HTTP_ADDR=http://consul-server:8500
+      - SERVICE_HOST=service_b
+      - SERVICE_PORT=8001
+    ports:
+      - "8001"
+    depends_on:
+      - consul
+    networks:
+      - consul-network
+
+  envoy_service_b:
+    image: envoyproxy/envoy:v1.21.1
+    environment:
+      - CONSUL_HTTP_ADDR=http://consul-server:8500
+    command: "envoy -c /etc/envoy/envoy.yaml"
+    depends_on:
+      - service_b
+    networks:
+      - consul-network
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml"
+
+networks:
+  consul-network:
+    driver: bridge

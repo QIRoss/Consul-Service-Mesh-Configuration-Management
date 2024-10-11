@@ -18,6 +18,8 @@ Each initial folder is an alternative project to Consul basics in dev mode (with
 
 ```consul-service-discovery-scalling```: this project extends scalling to load balancing replicas in a service mesh.
 
+```consul-envoy-sidecar```: will be skipped until next project repo.
+
 ## ```consul-fastapi```
 
 ```
