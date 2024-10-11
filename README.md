@@ -14,6 +14,8 @@ Each initial folder is an alternative project from my studies:
 
 ```consul-fastapi```: this starting project teaches how to browse to ```localhost:8500``` and build you own configuration key to get the configuration values into a FastAPI application.
 
+```consul-service-discovery```: this project shows basics of service discovery.
+
 
 ## ```consul-fastapi```
 
@@ -25,6 +27,19 @@ Browse to ```localhost:8500``` create a key with name ```config/myapp``` and a v
 curl http://localhost:8000/config
 ```
 This shows how your starting application got basic configurations from Consul.
+
+## ```consul-service-discovery```
+
+This service is based in service discovering a service A to a service B get the message from an API endpoint.
+Consul is responsible for register services so they can be consulted by another services.
+
+```
+docker-compose up --build
+curl http://localhost:8001/greet
+curl http://localhost:8002/get-greeting
+```
+
+You will see the same message in different application thanks to Consul service discovery register.
 
 ## Author
 This project was implemented by [Lucas de Queiroz dos Reis][2]. It is based on the Day 23–24: Automate multi-environment setups using Terraform and Ansible dynamic inventories from the [100 Days System Design for DevOps and Cloud Engineers][1].
